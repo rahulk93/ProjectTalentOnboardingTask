@@ -1,0 +1,6 @@
+@ProjectTalentOnboardingTask.Server_HostAddress = http://localhost:5218
+
+GET {{ProjectTalentOnboardingTask.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
