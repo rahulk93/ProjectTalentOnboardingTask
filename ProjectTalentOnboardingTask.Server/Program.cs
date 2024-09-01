@@ -19,7 +19,7 @@ namespace ProjectTalentOnboardingTask.Server
             builder.Services.AddSwaggerGen();
 
             // Database Context
-            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
+            builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
 
 
             var app = builder.Build();

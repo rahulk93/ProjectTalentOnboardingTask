@@ -1,0 +1,11 @@
+.header {
+    padding: 2rem;
+    background-color: black;
+    margin: 2px 0;
+    color: #FFF;
+}
+
+.link {
+    color: #FFF;
+    font-size: 1.1em;
+}

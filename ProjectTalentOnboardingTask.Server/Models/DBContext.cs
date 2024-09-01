@@ -2,10 +2,10 @@
 
 namespace ProjectTalentOnboardingTask.Server.Models
 {
-    public partial class ApplicationDbContext : DbContext
+    public partial class DBContext : DbContext
     {
-        //public ApplicationDbContext() { }
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
+        public DBContext() { }
+        public DBContext(DbContextOptions<DBContext> options) : base(options) 
         { }
         public virtual DbSet<Customer> Customer { get; set; } = null!;
         public virtual DbSet<Product> Product { get; set; }

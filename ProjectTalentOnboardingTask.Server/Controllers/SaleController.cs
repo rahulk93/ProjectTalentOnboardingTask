@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjectTalentOnboardingTask.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using ProjectTalentOnboardingTask.Server.Models;
 
 namespace ProjectTalentOnboardingTask.Server.Controllers
 {
@@ -8,62 +8,100 @@ namespace ProjectTalentOnboardingTask.Server.Controllers
     [ApiController]
     public class SaleController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly DBContext _context;
 
-        public SaleController(ApplicationDbContext context)
+        public SaleController(DBContext context)
         {
             _context = context;
         }
 
         // GET: api/<SaleController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sale>>> GetSales()
+        public async Task<ActionResult<IEnumerable<Sale>>> GetSalesAsync()
         {
-            return await _context.Sales
-                .Include(s => s.Customer)
-                .Include(s => s.Product)
-                .Include(s => s.Store)
-                .ToArrayAsync();
+            try
+            {
+                return await _context.Sales
+                                   .Include(s => s.Customer)
+                                   .Include(s => s.Product)
+                                   .Include(s => s.Store)
+                                   .ToArrayAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"error in sales fetching {ex.Message}");
+            }
+
+
         }
 
 
         // GET api/<SaleController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Sale>> GetSale(int id)
+        public async Task<ActionResult<Sale>> GetSaleAsync(int id)
         {
-            var sale = await _context.Sales.FindAsync(id);
-
-            if (sale == null)
+            if (!HasValidId(id))
             {
-                return NotFound();
+                return BadRequest("Invalid ID");
             }
 
-            return sale;
+            try
+            {
+                var sale = await _context.Sales.FindAsync(id);
+
+                if (sale == null)
+                {
+                    return NotFound();
+                }
+
+                return sale;
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"error in sale fetching {ex.Message}");
+            }
+
+
         }
 
         // POST api/<SaleController>
         [HttpPost]
-        public async Task<ActionResult<Sale>> PostSale(Sale sale)
+        public async Task<ActionResult<Sale>> PostSaleAsync(Sale sale)
         {
-            _context.Sales.Add(sale);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Sales.Add(sale);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetSale), new { id = sale.Id }, sale);
+                return sale;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"error in sale saving {ex.Message}");
+            }
+
+
         }
 
         // PUT api/<SaleController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSale(int id, Sale sale)
+        public async Task<IActionResult> PutSaleAsync(int id, Sale sale)
         {
-            if (id != sale.Id)
+            if (!HasValidId(id))
             {
-                return BadRequest();
+                return BadRequest("Invalid ID");
             }
-
-            _context.Entry(sale).State = EntityState.Modified;
 
             try
             {
+                if (id != sale.Id)
+                {
+                    return BadRequest();
+                }
+
+                _context.Entry(sale).State = EntityState.Modified;
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -84,18 +122,33 @@ namespace ProjectTalentOnboardingTask.Server.Controllers
         // DELETE api/<SaleController>/5
         [HttpDelete("{id}")]
 
-        public async Task<IActionResult> DeleteSale(int id)
+        public async Task<IActionResult> DeleteSaleAsync(int id)
         {
-            var sale = await _context.Sales.FindAsync(id);
-            if (sale == null)
+            if (!HasValidId(id))
             {
-                return NotFound();
+                return BadRequest("Invalid ID");
             }
 
-            _context.Sales.Remove(sale);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var sale = await _context.Sales.FindAsync(id);
+                if (sale == null)
+                {
+                    return NotFound();
+                }
 
-            return NoContent();
+                _context.Sales.Remove(sale);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"error in sale deleting {ex.Message}");
+            }
+
+
         }
 
         private bool SaleExists(int id)
@@ -103,6 +156,10 @@ namespace ProjectTalentOnboardingTask.Server.Controllers
             return _context.Sales.Any(e => e.Id == id);
         }
 
+        private bool HasValidId(int id)
+        {
+            return id > 0;
+        }
+
     }
 }
-
