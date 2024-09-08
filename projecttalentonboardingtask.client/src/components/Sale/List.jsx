@@ -15,7 +15,7 @@ export default function List() {
     const fetchSales = async () => {
 
         try {
-            await fetch('https://onboardsite.azurewebsites.net/api/Sale')
+            await fetch('https://boardsite.azurewebsites.net/api/Sale')
                 .then(response => response.json())
                 .then(data => setSales(data))
                 .catch(error => console.error('Error fetching sales:', error));

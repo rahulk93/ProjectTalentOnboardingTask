@@ -17,7 +17,7 @@ export default function Delete({ item, isDeleted }) {
         }
 
         try {
-            const response = await fetch(`https://onboardsite.azurewebsites.net/api/${item.url}/${item.id}`, {
+            const response = await fetch(`https://boardsite.azurewebsites.net/api/${item.url}/${item.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

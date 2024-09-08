@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'semantic-ui-react'
-
 import ProductCreate from './Create';
 import ProductEdit from './Edit';
 import ProductDelete from '../Common/Delete';
@@ -18,7 +17,7 @@ export default function List() {
     const fetchProducts = async () => {
 
         try {
-            await fetch('https://onboardsite.azurewebsites.net/api/Product')
+            await fetch('https://boardsite.azurewebsites.net/api/Product')
                 .then(response => response.json())
                 .then(data => setProducts(data))
                 .catch(error => console.error('Error fetching products:', error));

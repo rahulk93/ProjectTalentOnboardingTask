@@ -29,7 +29,7 @@ export default function Create({ isCreated }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('https://onboardsite.azurewebsites.net/api/Product', {
+            const response = await fetch('https://boardsite.azurewebsites.net/api/Product', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

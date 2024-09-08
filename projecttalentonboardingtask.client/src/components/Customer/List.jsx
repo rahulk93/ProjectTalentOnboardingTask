@@ -15,7 +15,7 @@ export default function List() {
     const fetchCustomers = async () => {
 
         try {
-            await fetch('https://onboardsite.azurewebsites.net/api/Customer')
+            await fetch('https://boardsite.azurewebsites.net/api/Customer')
                 .then(response => response.json())
                 .then(data => setCustomers(data))
                 .catch(error => console.error('Error fetching customers:', error));

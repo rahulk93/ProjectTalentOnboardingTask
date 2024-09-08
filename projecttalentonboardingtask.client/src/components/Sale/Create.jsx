@@ -27,7 +27,7 @@ export default function Create({ isCreated }) {
     }, []);
 
     // const
-    const API_END_POINT = `https://onboardsite.azurewebsites.net/api/`;
+    const API_END_POINT = `https://boardsite.azurewebsites.net/api/`;
 
     // methods
     const handleDisplayModal = () => {

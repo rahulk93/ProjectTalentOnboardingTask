@@ -22,7 +22,7 @@ export default function Edit({ item, isUpdated }) {
     }, [item.store.id]);
 
     // const
-    const API_END_POINT = `https://onboardsite.azurewebsites.net/api/Store/`;
+    const API_END_POINT = `https://boardsite.azurewebsites.net/api/Store/`;
 
     // methods
     const handleDisplayModal = () => {

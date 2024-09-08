@@ -16,7 +16,7 @@ export default function List() {
     const fetchStores = async () => {
 
         try {
-            await fetch('https://onboardsite.azurewebsites.net/api/Store')
+            await fetch('https://boardsite.azurewebsites.net/api/Store')
                 .then(response => response.json())
                 .then(data => setStores(data))
                 .catch(error => console.error('Error fetching stores:', error));
