@@ -18,7 +18,6 @@ function Header() {
                         </div>
                         <div className="column">
                             <a className="link" href="/stores">Stores</a>
-
                         </div>
                         <div className="column">
                             <a className="link" href="/sales">Sales</a>

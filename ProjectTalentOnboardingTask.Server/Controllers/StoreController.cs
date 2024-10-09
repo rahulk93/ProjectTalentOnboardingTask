@@ -75,8 +75,8 @@ namespace ProjectTalentOnboardingTask.Server.Controllers
                 return BadRequest($"error in store saving {ex.Message}");
             }
 
-
         }
+
 
         // PUT api/<StoreController>/5
         [HttpPut("{id}")]

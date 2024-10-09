@@ -1,17 +1,19 @@
 import { React, useState, useEffect } from 'react'
 import { Modal, Button, Message } from 'semantic-ui-react';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Create({ isCreated }) {
 
     // states
     const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState(null);
+    const [message, setMessage] = useState({ text: null, type: null });
 
     const [formData, setFormData] = useState({
         customerId: '',
         productId: '',
         storeId: '',
-        dateSold: ''
+        dateSold: null
 
     });
 
@@ -32,7 +34,7 @@ export default function Create({ isCreated }) {
     // methods
     const handleDisplayModal = () => {
         setOpen(!open);
-        setMessage(null);
+        setMessage({ text: null, type: null });
     };
 
     const fetchCustomers = async () => {
@@ -84,9 +86,27 @@ export default function Create({ isCreated }) {
         });
     };
 
+    const handleDateChange = (date) => {
+        setFormData({
+            ...formData,
+            dateSold: date,
+        });
+    };
+
+    const isFormValid = () => {
+        const { customerId, productId, storeId, dateSold } = formData;
+        if (!customerId || !productId || !storeId || !dateSold) {
+            setMessage({ text: 'Please fill in all fields and select a date.', type: 'negative' });
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        if (!isFormValid()) {
+            return; 
+        }
         console.log(formData);
         try {
             const response = await fetch(`${API_END_POINT}Sale`, {
@@ -99,12 +119,10 @@ export default function Create({ isCreated }) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            // Handle success           
-            console.log('Store created successfully');
+   
 
-            setMessage(<Message positive>
-                <p>The sale has been created successfully.</p>
-            </Message>)
+            setMessage({ text: 'The sale has been created successfully.', type: 'positive' });
+            
 
             setTimeout(() => {
                 handleDisplayModal()
@@ -114,12 +132,21 @@ export default function Create({ isCreated }) {
 
         } catch (error) {
 
-            setMessage(<Message negative>
-                <p>There was an error while creating the sale.</p>
-            </Message>)
+            setMessage({ text: 'There was an error while creating the sale.', type: 'negative' });
+           
 
-            console.error('There was a problem creating store:', error.message);
+            console.error('There was a problem creating sale:', error.message);
         }
+    };
+
+    const renderMessage = () => {
+        if (!message.text) return null;
+
+        return (
+            <Message className={message.type}>
+                <p>{message.text}</p>
+            </Message>
+        );
     };
 
 
@@ -163,17 +190,17 @@ export default function Create({ isCreated }) {
                             </select>
                         </div>
                         <div class="field">
-                            <label>Date Sold (yyyy-mm-dd)</label>
-                            <input
-                                type="text"
-                                name="dateSold"
-                                placeholder="Date Sold"
-                                value={formData.dateSold}
-                                onChange={handleChange} />
+                            <label>Date Sold</label>
+                            <DatePicker
+                                selected={formData.dateSold}
+                                onChange={handleDateChange}
+                                dateFormat="yyyy-MM-dd"
+                                placeholderText="Select Date Sold"
+                            />
                         </div>
                     </form>
 
-                    {message}
+                    {renderMessage()}
 
                 </Modal.Content>
                 <Modal.Actions>
