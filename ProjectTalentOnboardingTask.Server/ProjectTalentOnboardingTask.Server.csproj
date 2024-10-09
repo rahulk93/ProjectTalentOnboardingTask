@@ -7,6 +7,7 @@
     <SpaRoot>..\projecttalentonboardingtask.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
+    <UserSecretsId>dc379b89-874d-4ea7-a409-d8655cbd553f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

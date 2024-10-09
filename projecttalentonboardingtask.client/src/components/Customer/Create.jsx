@@ -5,7 +5,7 @@ export default function Create({ isCreated }) {
 
     // states
     const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState(null);
+    const [message, setMessage] = useState({ text: null, type: null });
 
     const [formData, setFormData] = useState({
         name: '',
@@ -15,7 +15,7 @@ export default function Create({ isCreated }) {
     // methods
     const handleDisplayModal = () => {
         setOpen(!open);
-        setMessage(null);
+        setMessage({ text: null, type: null });
     };
 
     const handleChange = (e) => {
@@ -26,8 +26,20 @@ export default function Create({ isCreated }) {
         });
     };
 
+    const isFormValid = () => {
+        const { name, address } = formData;
+        if (!name || !address) {
+            setMessage({ text: 'Please fill in all fields.', type: 'negative' });
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isFormValid()) {
+            return;
+        }
         try {
             const response = await fetch(`https://boardsite.azurewebsites.net/api/Customer`, {
                 method: 'POST',
@@ -40,14 +52,9 @@ export default function Create({ isCreated }) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            // Handle success           
-            console.log('Customer created successfully');
-
-            setMessage(<Message positive>
-                <p>The customer has been created successfully.</p>
-            </Message>)
-
-
+      
+            setMessage({ text: 'The customer has been created successfully.', type: 'positive' });
+            
             setTimeout(() => {
                 handleDisplayModal();
                 isCreated(true)
@@ -55,11 +62,20 @@ export default function Create({ isCreated }) {
 
 
         } catch (error) {
-            setMessage(<Message negative>
-                <p>There was an error while creating the customer.</p>
-            </Message>)
+            setMessage({ text: 'There was an error while creating the customer.', type: 'negative' });
+            
             console.error('There was a problem creating customer:', error.message);
         }
+    };
+
+    const renderMessage = () => {
+        if (!message.text) return null;
+
+        return (
+            <Message className={message.type}>
+                <p>{message.text}</p>
+            </Message>
+        );
     };
 
     return (
@@ -94,7 +110,7 @@ export default function Create({ isCreated }) {
                         </div>
                     </form>
 
-                    {message}
+                    {renderMessage()}
 
                 </Modal.Content>
                 <Modal.Actions>
