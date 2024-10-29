@@ -72,7 +72,9 @@ export default function Create({ isCreated }) {
     };
 
     const renderMessage = () => {
-        if (!message.text) return null;
+        if (!message.text) {
+            return null;
+        }
 
         return (
             <Message className={message.type}>
@@ -80,8 +82,6 @@ export default function Create({ isCreated }) {
             </Message>
         );
     };
-
-
 
     return (
         <>

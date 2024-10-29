@@ -96,7 +96,9 @@ export default function Edit({ item, isUpdated }) {
     };
 
     const renderMessage = () => {
-        if (!message.text) return null;
+        if (!message.text) {
+            return null;
+        }
 
         return (
             <Message className={message.type}>

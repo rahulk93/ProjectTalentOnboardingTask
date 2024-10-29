@@ -2,6 +2,8 @@ import { React, useState, useEffect } from 'react'
 import { Modal, Button, Message } from 'semantic-ui-react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { format } from 'date-fns';
+
 
 export default function Create({ isCreated }) {
 
@@ -89,7 +91,7 @@ export default function Create({ isCreated }) {
     const handleDateChange = (date) => {
         setFormData({
             ...formData,
-            dateSold: date,
+            dateSold: format(date, 'yyyy-MM-dd'), 
         });
     };
 
@@ -119,28 +121,23 @@ export default function Create({ isCreated }) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-   
-
             setMessage({ text: 'The sale has been created successfully.', type: 'positive' });
-            
-
+       
             setTimeout(() => {
                 handleDisplayModal()
                 isCreated(true)
             }, 3000);
 
-
         } catch (error) {
-
             setMessage({ text: 'There was an error while creating the sale.', type: 'negative' });
-           
-
             console.error('There was a problem creating sale:', error.message);
         }
     };
 
     const renderMessage = () => {
-        if (!message.text) return null;
+        if (!message.text) {
+            return null;
+        }
 
         return (
             <Message className={message.type}>
@@ -148,9 +145,7 @@ export default function Create({ isCreated }) {
             </Message>
         );
     };
-
-
-
+ 
     return (
         <>
 

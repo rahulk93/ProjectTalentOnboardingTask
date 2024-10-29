@@ -34,8 +34,6 @@ export default function Edit({ item, isUpdated }) {
     const fetchCustomer = async () => {
         try {
             const response = await fetch(`${API_END_POINT + item.customer.id}`);
-
-            console.log(response);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -99,7 +97,9 @@ export default function Edit({ item, isUpdated }) {
     };
 
     const renderMessage = () => {
-        if (!message.text) return null;
+        if (!message.text) {
+            return null;
+        }
 
         return (
             <Message className={message.type}>

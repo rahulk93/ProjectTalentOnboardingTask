@@ -2,6 +2,7 @@ import { React, useState, useEffect } from 'react';
 import { Modal, Button, Message } from 'semantic-ui-react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { format } from 'date-fns';
 
 
 export default function Edit({ item, isUpdated }) {
@@ -112,7 +113,7 @@ export default function Edit({ item, isUpdated }) {
     const handleDateChange = (date) => {
         setFormData({
             ...formData,
-            dateSold: date,
+            dateSold: format(date, 'yyyy-MM-dd'), 
         });
     };
 
@@ -130,6 +131,7 @@ export default function Edit({ item, isUpdated }) {
         if (!isFormValid()) {
             return;
         }
+        
         try {
             const response = await fetch(`${API_END_POINT}Sale/${item.sale.id}`, {
                 method: 'PUT',
@@ -142,10 +144,8 @@ export default function Edit({ item, isUpdated }) {
                 throw new Error('Network response was not ok');
             }
  
-
             setMessage({ text: 'The sale has been updated successfully.', type: 'positive' });
             
-
             setTimeout(() => {
                 handleDisplayModal()
                 isUpdated(true)
@@ -155,13 +155,14 @@ export default function Edit({ item, isUpdated }) {
 
             setMessage({ text: 'There was an error while updating the sale.', type: 'negative' });
             
-
             console.error('There was a problem updating sale:', error.message);
         }
     };
 
     const renderMessage = () => {
-        if (!message.text) return null;
+        if (!message.text) {
+            return null;
+        }
 
         return (
             <Message className={message.type}>
