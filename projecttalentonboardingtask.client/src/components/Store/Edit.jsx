@@ -5,7 +5,7 @@ export default function Edit({ item, isUpdated }) {
 
     // states
     const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState(null);
+    const [message, setMessage] = useState({ text: null, type: null });
 
     const [formData, setFormData] = useState({
         name: '',
@@ -27,7 +27,7 @@ export default function Edit({ item, isUpdated }) {
     // methods
     const handleDisplayModal = () => {
         setOpen(!open);
-        setMessage(null);
+        setMessage({ text: null, type: null });
     };
 
     const fetchStore = async () => {
@@ -51,25 +51,34 @@ export default function Edit({ item, isUpdated }) {
         });
     };
 
+    const isFormValid = () => {
+        const { name, address } = formData;
+        if (!name || !address) {
+            setMessage({ text: 'Please fill in all fields.', type: 'negative' });
+            return false;
+        }
+        return true;
+    };
+
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (!isFormValid()) {
+            return; 
+        }
         try {
             const response = await fetch(`${API_END_POINT + item.store.id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData),
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            // Handle success
-            console.log('Store updated successfully');
+            
 
-            setMessage(<Message positive>
-                <p>The store has been updated successfully.</p>
-            </Message>)
+            setMessage({ text: 'The store has been updated successfully.', type: 'positive' });
 
             setTimeout(() => {
                 handleDisplayModal()
@@ -78,12 +87,22 @@ export default function Edit({ item, isUpdated }) {
 
         } catch (error) {
 
-            setMessage(<Message negative>
-                <p>There was an error while updating the store.</p>
-            </Message>)
+            setMessage({ text: 'There was an error while updating the store.', type: 'negative' });
 
             console.error('There was a problem updating store:', error.message);
         }
+    };
+
+    const renderMessage = () => {
+        if (!message.text) {
+            return null;
+        }
+
+        return (
+            <Message className={message.type}>
+                <p>{message.text}</p>
+            </Message>
+        );
     };
 
     return (
@@ -119,7 +138,7 @@ export default function Edit({ item, isUpdated }) {
 
                     </form>
 
-                    {message}
+                    {renderMessage()}
 
                 </Modal.Content>
                 <Modal.Actions>

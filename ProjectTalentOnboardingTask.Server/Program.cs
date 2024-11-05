@@ -52,6 +52,7 @@ namespace ProjectTalentOnboardingTask.Server
 
 
             app.Run();
+
         }
     }
 }

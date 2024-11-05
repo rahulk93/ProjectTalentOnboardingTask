@@ -1,17 +1,21 @@
 import { React, useState, useEffect } from 'react';
 import { Modal, Button, Message } from 'semantic-ui-react';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from 'date-fns';
+
 
 export default function Edit({ item, isUpdated }) {
 
     // states
     const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState(null);
+    const [message, setMessage] = useState({ text: null, type: null });
 
     const [formData, setFormData] = useState({
         customerId: '',
         productId: '',
         storeId: '',
-        dateSold: ''
+        dateSold: null
     });
 
     const [customers, setCustomers] = useState([]);
@@ -42,7 +46,7 @@ export default function Edit({ item, isUpdated }) {
     // methods
     const handleDisplayModal = () => {
         setOpen(!open);
-        setMessage(null);
+        setMessage({ text: null, type: null });
     };
 
     const fetchCustomers = async () => {
@@ -89,7 +93,10 @@ export default function Edit({ item, isUpdated }) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            setFormData(data);
+            setFormData({
+                ...data,
+                dateSold: new Date(data.dateSold),  
+            });
         } catch (error) {
             console.error('There was a problem fetching sale data:', error.message);
         }
@@ -103,8 +110,28 @@ export default function Edit({ item, isUpdated }) {
         });
     };
 
+    const handleDateChange = (date) => {
+        setFormData({
+            ...formData,
+            dateSold: format(date, 'yyyy-MM-dd'), 
+        });
+    };
+
+    const isFormValid = () => {
+        const { customerId, productId, storeId, dateSold } = formData;
+        if (!customerId || !productId || !storeId || !dateSold) {
+            setMessage({ text: 'Please fill in all fields and select a date.', type: 'negative' });
+            return false;
+        }
+        return true;
+    };
+
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (!isFormValid()) {
+            return;
+        }
+        
         try {
             const response = await fetch(`${API_END_POINT}Sale/${item.sale.id}`, {
                 method: 'PUT',
@@ -116,13 +143,9 @@ export default function Edit({ item, isUpdated }) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            // Handle success
-            console.log('Sale updated successfully');
-
-            setMessage(<Message positive>
-                <p>The sale has been updated successfully.</p>
-            </Message>)
-
+ 
+            setMessage({ text: 'The sale has been updated successfully.', type: 'positive' });
+            
             setTimeout(() => {
                 handleDisplayModal()
                 isUpdated(true)
@@ -130,12 +153,22 @@ export default function Edit({ item, isUpdated }) {
 
         } catch (error) {
 
-            setMessage(<Message negative>
-                <p>There was an error while updating the sale.</p>
-            </Message>)
-
+            setMessage({ text: 'There was an error while updating the sale.', type: 'negative' });
+            
             console.error('There was a problem updating sale:', error.message);
         }
+    };
+
+    const renderMessage = () => {
+        if (!message.text) {
+            return null;
+        }
+
+        return (
+            <Message className={message.type}>
+                <p>{message.text}</p>
+            </Message>
+        );
     };
 
     return (
@@ -177,18 +210,18 @@ export default function Edit({ item, isUpdated }) {
                             </select>
                         </div>
                         <div class="field">
-                            <label>Date Sold (yyyy-mm-dd)</label>
-                            <input
-                                type="text"
-                                name="dateSold"
-                                placeholder="Date Sold"
-                                value={formData.dateSold}
-                                onChange={handleChange} />
+                            <label>Date Sold</label>
+                            <DatePicker
+                                selected={formData.dateSold}
+                                onChange={handleDateChange}
+                                dateFormat="yyyy-MM-dd"
+                                placeholderText="Select Date Sold"
+                            />
                         </div>
 
                     </form>
 
-                    {message}
+                    {renderMessage()}
 
                 </Modal.Content>
                 <Modal.Actions>
