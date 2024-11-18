@@ -95,7 +95,8 @@ export default function Edit({ item, isUpdated }) {
             const data = await response.json();
             setFormData({
                 ...data,
-                dateSold: new Date(data.dateSold),  
+                dateSold: format(new Date(data.dateSold), 'yyyy-MM-dd'),
+
             });
         } catch (error) {
             console.error('There was a problem fetching sale data:', error.message);
