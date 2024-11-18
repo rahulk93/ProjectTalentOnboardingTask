@@ -80,7 +80,7 @@ export default function Create({ isCreated }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        console.log(name, value);
+
 
         setFormData({
             ...formData,
@@ -109,7 +109,6 @@ export default function Create({ isCreated }) {
         if (!isFormValid()) {
             return; 
         }
-        console.log(formData);
         try {
             const response = await fetch(`${API_END_POINT}Sale`, {
                 method: 'POST',
